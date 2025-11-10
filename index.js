@@ -12,7 +12,7 @@ import mongoose from "mongoose";
   dotenv.config()
 const app = express();
 app.use(cors({
- origin: ['http://localhost:5173', 'https://clinic-management-frontend-flame.vercel.app/'],
+ origin: 'http://localhost:5173', 
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
 }));
@@ -58,6 +58,8 @@ app.use("/api/v1/appointment", appointmentRouter);
 
 
 app.use(errorMiddleware);
+app.listen(PORT , ()=>{
+  console.log(`PORT IS RUNNING ON ${PORT}`);
+  
+})
 
-
-export default app
