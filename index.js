@@ -9,10 +9,10 @@ import userRouter from "./router/userRouter.js";
 import appointmentRouter from "./router/appointmentRouter.js";
 // import cloudinary from "cloudinary";
 import mongoose from "mongoose";
-
+  dotenv.config()
 const app = express();
 app.use(cors({
-  origin: 'http://localhost:5173',
+ origin: ['http://localhost:5173', 'https://clinic-management-frontend-flame.vercel.app/'],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
 }));
@@ -21,7 +21,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-dotenv.config()
+
 const PORT =3000
 // Cloudinary Configuration
 // cloudinary.v2.config({
@@ -59,7 +59,5 @@ app.use("/api/v1/appointment", appointmentRouter);
 
 app.use(errorMiddleware);
 
-// Start Server
-app.listen(PORT, () => {
-  console.log(`Server listening at port ${PORT}`);
-});
+
+export default app
