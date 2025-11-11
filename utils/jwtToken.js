@@ -1,12 +1,12 @@
 export const generateToken = (user, message, statusCode, res) => {
   const token = user.generateJsonWebToken();
   
-  // ✅ Three separate tokens for three roles
+  
   let cookieName;
   if (user.role === 'Admin') {
     cookieName = 'adminToken';
   } else if (user.role === 'Doctor') {
-    cookieName = 'doctorToken';  // ✅ Doctor ka alag token
+    cookieName = 'doctorToken';
   } else {
     cookieName = 'patientToken';
   }

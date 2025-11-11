@@ -67,11 +67,11 @@ const appointmentSchema = new mongoose.Schema({
   doctorId: {
     type: mongoose.Schema.ObjectId,
     required: [true, "Doctor Id Is Invalid!"],
-    ref: "User", // ✅ References the User model
+    ref: "User",
   },
   patientId: {
     type: mongoose.Schema.ObjectId,
-    ref: "User", // ✅ References the User model
+    ref: "User", 
     required: [true, "Patient Id Is Required!"],
   },
   status: {
@@ -80,7 +80,7 @@ const appointmentSchema = new mongoose.Schema({
     default: "Pending",
   },
 }, {
-  timestamps: true, // ✅ Adds createdAt and updatedAt
+  timestamps: true, 
 });
 
 export const Appointment = mongoose.model("Appointment", appointmentSchema);

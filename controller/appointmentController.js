@@ -20,7 +20,6 @@ export const postAppointment = catchAsyncErrors(async (req, res, next) => {
     address,
   } = req.body;
 
-  // Check all required fields
   if (
     !firstName ||
     !lastName ||
@@ -38,43 +37,36 @@ export const postAppointment = catchAsyncErrors(async (req, res, next) => {
     return next(new ErrorHandler("Please Fill Full Form!", 400));
   }
 
-  // Email validation
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) {
     return next(new ErrorHandler("Please provide a valid email address!", 400));
   }
 
-  // Phone validation (11 digits for Pakistan)
   if (phone.length !== 11 || !/^\d{11}$/.test(phone)) {
     return next(new ErrorHandler("Phone number must be exactly 11 digits!", 400));
   }
 
-  // NIC validation (13 digits)
   if (nic.length !== 13 || !/^\d{13}$/.test(nic)) {
     return next(new ErrorHandler("NIC must be exactly 13 digits!", 400));
   }
 
-  // Date of Birth validation (must be in the past)
   const dobDate = new Date(dob);
   const today = new Date();
   if (dobDate >= today) {
     return next(new ErrorHandler("Date of birth must be in the past!", 400));
   }
 
-  // Age validation (minimum 1 year old)
   const age = today.getFullYear() - dobDate.getFullYear();
   if (age < 1) {
     return next(new ErrorHandler("Patient must be at least 1 year old!", 400));
   }
 
-  // Appointment date validation (must be today or future)
   const appointmentDate = new Date(appointment_date);
   const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
   if (appointmentDate < todayStart) {
     return next(new ErrorHandler("Appointment date cannot be in the past!", 400));
   }
 
-  // hasVisited validation (should be boolean or boolean string)
   if (hasVisited !== undefined && hasVisited !== null) {
     if (typeof hasVisited === 'string') {
       if (hasVisited !== 'true' && hasVisited !== 'false') {
@@ -83,7 +75,6 @@ export const postAppointment = catchAsyncErrors(async (req, res, next) => {
     }
   }
 
-  // Find doctor with matching details
   const isConflict = await User.find({
     firstName: doctor_firstName,
     lastName: doctor_lastName,
@@ -107,12 +98,11 @@ export const postAppointment = catchAsyncErrors(async (req, res, next) => {
   const doctorId = isConflict[0]._id;
   const patientId = req.user._id;
 
-  // Check for duplicate appointment
   const existingAppointment = await Appointment.findOne({
     patientId,
     doctorId,
     appointment_date,
-    status: { $ne: "Rejected" }, // Exclude rejected appointments
+    status: { $ne: "Rejected" },
   });
 
   if (existingAppointment) {
@@ -156,6 +146,19 @@ export const getAllAppointments = catchAsyncErrors(async (req, res, next) => {
   res.status(200).json({
     success: true,
     appointments,
+  });
+});
+
+
+export const getDoctorAppointments = catchAsyncErrors(async (req, res, next) => {
+  const doctorId = req.user._id;
+  
+  const appointments = await Appointment.find({ doctorId });
+  
+  res.status(200).json({
+    success: true,
+    appointments,
+    count: appointments.length,
   });
 });
 

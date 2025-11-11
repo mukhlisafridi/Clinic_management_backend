@@ -2,7 +2,7 @@ import { catchAsyncErrors } from "../middlewares/catchAsyncErrors.js";
 import { User } from "../models/userSchema.js";
 import ErrorHandler from "../middlewares/error.js";
 import { generateToken } from "../utils/jwtToken.js";
-import cloudinary from "cloudinary";
+
 
 export const patientRegister = catchAsyncErrors(async (req, res, next) => {
   const { firstName, lastName, email, phone, nic, dob, gender, password } =
@@ -142,18 +142,7 @@ export const addNewDoctor = catchAsyncErrors(async (req, res, next) => {
       new ErrorHandler("Doctor With This Email Already Exists!", 400)
     );
   }
-  const cloudinaryResponse = await cloudinary.uploader.upload(
-    docAvatar.tempFilePath
-  );
-  if (!cloudinaryResponse || cloudinaryResponse.error) {
-    console.error(
-      "Cloudinary Error:",
-      cloudinaryResponse.error || "Unknown Cloudinary error"
-    );
-    return next(
-      new ErrorHandler("Failed To Upload Doctor Avatar To Cloudinary", 500)
-    );
-  }
+  
   const doctor = await User.create({
     firstName,
     lastName,
@@ -177,27 +166,26 @@ export const addNewDoctor = catchAsyncErrors(async (req, res, next) => {
   });
 });
 
-// ✅ NEW FUNCTION: Simplified Doctor Registration for Dashboard
+
 export const addNewDoctorSimplified = catchAsyncErrors(async (req, res, next) => {
   const { name, email, password, department } = req.body;
 
-  // Validate required fields
+
   if (!name || !email || !password || !department) {
     return next(new ErrorHandler("Please Fill All Fields!", 400));
   }
 
-  // Split name into firstName and lastName
+
   const nameParts = name.trim().split(' ');
   const firstName = nameParts[0];
   const lastName = nameParts.slice(1).join(' ') || firstName;
 
-  // Check if email already exists
   const isRegistered = await User.findOne({ email });
   if (isRegistered) {
     return next(new ErrorHandler("Doctor With This Email Already Exists!", 400));
   }
 
-  // Create doctor with default values
+
   const doctor = await User.create({
     firstName,
     lastName,
@@ -252,7 +240,6 @@ export const logoutDoctor = catchAsyncErrors(async (req, res, next) => {
     });
 });
 
-// Existing logout functions...
 export const logoutAdmin = catchAsyncErrors(async (req, res, next) => {
   res
     .status(201)
