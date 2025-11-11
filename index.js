@@ -11,12 +11,14 @@ import appointmentRouter from "./router/appointmentRouter.js";
 import mongoose from "mongoose";
   dotenv.config()
 const app = express();
-app.use(cors({
- origin: 'https://clinic-management-frontend-flame.vercel.app', 
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-}));
 
+
+app.use(cors({
+  origin: 'http://localhost:5173'||"https://clinic-management-frontend-flame.vercel.app",
+  credentials: true,  // e
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

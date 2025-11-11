@@ -1,7 +1,15 @@
 export const generateToken = (user, message, statusCode, res) => {
   const token = user.generateJsonWebToken();
-  // Determine the cookie name based on the user's role
-  const cookieName = user.role === 'Admin' ? 'adminToken' : 'patientToken';
+  
+  // ✅ Three separate tokens for three roles
+  let cookieName;
+  if (user.role === 'Admin') {
+    cookieName = 'adminToken';
+  } else if (user.role === 'Doctor') {
+    cookieName = 'doctorToken';  // ✅ Doctor ka alag token
+  } else {
+    cookieName = 'patientToken';
+  }
 
   res
     .status(statusCode)
@@ -18,4 +26,3 @@ export const generateToken = (user, message, statusCode, res) => {
       token,
     });
 };
-
