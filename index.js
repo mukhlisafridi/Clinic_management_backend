@@ -9,21 +9,20 @@ import userRouter from "./router/userRouter.js";
 import appointmentRouter from "./router/appointmentRouter.js";
 
 import mongoose from "mongoose";
-  dotenv.config()
+dotenv.config();
 const app = express();
 
-
-app.use(cors({
-  origin: [
-  "http://localhost:5173","https://clinic-management-frontend-flame.vercel.app"],
-  credentials: true,  
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+app.use(
+  cors({
+    origin: "https://clinic-management-frontend-flame.vercel.app",
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 
 const PORT = process.env.PORT || 3000;
 
@@ -39,18 +38,12 @@ const connectDB = async () => {
 };
 connectDB();
 
-
-
-
 app.use("/api/v1/message", messageRouter);
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/appointment", appointmentRouter);
 
-
 app.use(errorMiddleware);
 
-
-app.listen(PORT,()=>{
+app.listen(PORT, () => {
   console.log(`PORT IS RUNNING ON ${PORT}`);
-  
-})
+});
