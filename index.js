@@ -25,7 +25,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 
-const PORT =3000
+const PORT = process.env.PORT || 3000;
 
 //  MongoDB Connection
 const connectDB = async () => {
@@ -49,11 +49,5 @@ app.use("/api/v1/appointment", appointmentRouter);
 
 app.use(errorMiddleware);
 
-app.get("/",(req,res)=>{
-  res.send("backend running")
-})
-app.listen(PORT , ()=>{
-  console.log(`PORT IS RUNNING ON ${PORT}`);
-  
-})
+
 
