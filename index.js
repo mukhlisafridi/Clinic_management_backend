@@ -40,7 +40,7 @@ const connectDB = async () => {
 connectDB();
 
 
-;
+
 
 app.use("/api/v1/message", messageRouter);
 app.use("/api/v1/user", userRouter);
@@ -50,5 +50,7 @@ app.use("/api/v1/appointment", appointmentRouter);
 app.use(errorMiddleware);
 
 
-
-export default app;  
+app.listen(PORT,()=>{
+  console.log(`PORT IS RUNNING ON ${PORT}`);
+  
+})
