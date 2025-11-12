@@ -48,6 +48,10 @@ app.use("/api/v1/appointment", appointmentRouter);
 
 
 app.use(errorMiddleware);
+
+app.get("/",(req,res)=>{
+  res.send("backend running")
+})
 app.listen(PORT , ()=>{
   console.log(`PORT IS RUNNING ON ${PORT}`);
   
