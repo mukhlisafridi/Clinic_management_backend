@@ -2,7 +2,7 @@ import { catchAsyncErrors } from "../middlewares/catchAsyncErrors.js";
 import { User } from "../models/userSchema.js";
 import ErrorHandler from "../middlewares/error.js";
 import { generateToken } from "../utils/jwtToken.js";
-
+import cloudinary from "cloudinary";
 
 export const patientRegister = catchAsyncErrors(async (req, res, next) => {
   const { firstName, lastName, email, phone, nic, dob, gender, password } =
@@ -142,6 +142,21 @@ export const addNewDoctor = catchAsyncErrors(async (req, res, next) => {
       new ErrorHandler("Doctor With This Email Already Exists!", 400)
     );
   }
+
+  // ✅ FIXED: Upload to Cloudinary first
+  const cloudinaryResponse = await cloudinary.uploader.upload(
+    docAvatar.tempFilePath
+  );
+  
+  if (!cloudinaryResponse || cloudinaryResponse.error) {
+    console.error(
+      "Cloudinary Error:",
+      cloudinaryResponse.error || "Unknown Cloudinary error"
+    );
+    return next(
+      new ErrorHandler("Failed To Upload Doctor Avatar To Cloudinary", 500)
+    );
+  }
   
   const doctor = await User.create({
     firstName,
@@ -159,6 +174,7 @@ export const addNewDoctor = catchAsyncErrors(async (req, res, next) => {
       url: cloudinaryResponse.secure_url,
     },
   });
+  
   res.status(200).json({
     success: true,
     message: "New Doctor Registered",
@@ -166,15 +182,12 @@ export const addNewDoctor = catchAsyncErrors(async (req, res, next) => {
   });
 });
 
-
 export const addNewDoctorSimplified = catchAsyncErrors(async (req, res, next) => {
   const { name, email, password, department } = req.body;
-
 
   if (!name || !email || !password || !department) {
     return next(new ErrorHandler("Please Fill All Fields!", 400));
   }
-
 
   const nameParts = name.trim().split(' ');
   const firstName = nameParts[0];
@@ -184,7 +197,6 @@ export const addNewDoctorSimplified = catchAsyncErrors(async (req, res, next) =>
   if (isRegistered) {
     return next(new ErrorHandler("Doctor With This Email Already Exists!", 400));
   }
-
 
   const doctor = await User.create({
     firstName,
@@ -229,12 +241,10 @@ export const getUserDetails = catchAsyncErrors(async (req, res, next) => {
 
 export const logoutDoctor = catchAsyncErrors(async (req, res, next) => {
   res
-    .status(201)
+    .status(200)
     .cookie("doctorToken", "", {
       httpOnly: true,
       expires: new Date(Date.now()),
-      sameSite: "none",
-      secure: true,
     })
     .json({
       success: true,
@@ -243,28 +253,24 @@ export const logoutDoctor = catchAsyncErrors(async (req, res, next) => {
 });
 
 export const logoutAdmin = catchAsyncErrors(async (req, res, next) => {
-  res.cookie("adminToken", "", {
-    httpOnly: true,
-    expires: new Date(0), // Expire date past time par
-    sameSite: "none",
-    secure: true,
-  });
-
-  res.status(200).json({
-    success: true,
-    message: "Admin Logged Out Successfully.",
-  });
+  res
+    .status(200)
+    .cookie("adminToken", "", {
+      httpOnly: true,
+      expires: new Date(Date.now()),
+    })
+    .json({
+      success: true,
+      message: "Admin Logged Out Successfully.",
+    });
 });
-
 
 export const logoutPatient = catchAsyncErrors(async (req, res, next) => {
   res
-    .status(201)
+    .status(200)
     .cookie("patientToken", "", {
       httpOnly: true,
       expires: new Date(Date.now()),
-      sameSite: "none",
-    secure: true,
     })
     .json({
       success: true,
