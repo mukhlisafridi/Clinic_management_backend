@@ -142,8 +142,6 @@ export const addNewDoctor = catchAsyncErrors(async (req, res, next) => {
       new ErrorHandler("Doctor With This Email Already Exists!", 400)
     );
   }
-
-  // ✅ FIXED: Upload to Cloudinary first
   const cloudinaryResponse = await cloudinary.uploader.upload(
     docAvatar.tempFilePath
   );

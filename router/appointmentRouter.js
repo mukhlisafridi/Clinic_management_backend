@@ -3,7 +3,7 @@ import {
   deleteAppointment,
   getAllAppointments,
   getDoctorAppointments,
-  getPatientAppointments,  // ✅ Import
+  getPatientAppointments,  
   postAppointment,
   updateAppointmentStatus,
 } from "../controller/appointmentController.js";
@@ -18,7 +18,7 @@ const router = express.Router();
 router.post("/post", isPatientAuthenticated, postAppointment);
 router.get("/getall", isAdminAuthenticated, getAllAppointments);
 router.get("/doctor/my-appointments", isDoctorAuthenticated, getDoctorAppointments);
-router.get("/patient/my-appointments", isPatientAuthenticated, getPatientAppointments);  // ✅ PATIENT ROUTE
+router.get("/patient/my-appointments", isPatientAuthenticated, getPatientAppointments); 
 router.put("/update/:id", isAdminAuthenticated, updateAppointmentStatus);
 router.delete("/delete/:id", isAdminAuthenticated, deleteAppointment);
 

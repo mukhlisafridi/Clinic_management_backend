@@ -149,7 +149,6 @@ export const getAllAppointments = catchAsyncErrors(async (req, res, next) => {
   });
 });
 
-// ✅ Get appointments for logged-in doctor
 export const getDoctorAppointments = catchAsyncErrors(async (req, res, next) => {
   const doctorId = req.user._id;
   
@@ -162,7 +161,6 @@ export const getDoctorAppointments = catchAsyncErrors(async (req, res, next) => 
   });
 });
 
-// ✅ NEW: Get appointments for logged-in patient
 export const getPatientAppointments = catchAsyncErrors(async (req, res, next) => {
   const patientId = req.user._id;
   
@@ -175,18 +173,34 @@ export const getPatientAppointments = catchAsyncErrors(async (req, res, next) =>
   });
 });
 
+
 export const updateAppointmentStatus = catchAsyncErrors(
   async (req, res, next) => {
     const { id } = req.params;
+    const { status } = req.body;
+    
     let appointment = await Appointment.findById(id);
     if (!appointment) {
       return next(new ErrorHandler("Appointment not found!", 404));
     }
+
+    if (status === 'Rejected') {
+      await appointment.deleteOne();
+      
+      return res.status(200).json({
+        success: true,
+        message: "Appointment Rejected and Deleted!",
+        deleted: true,
+      });
+    }
+
+    
     appointment = await Appointment.findByIdAndUpdate(id, req.body, {
       new: true,
       runValidators: true,
       useFindAndModify: false,
     });
+    
     res.status(200).json({
       success: true,
       message: "Appointment Status Updated!",

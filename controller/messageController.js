@@ -22,6 +22,7 @@ export const getAllMessages = catchAsyncErrors(async (req, res, next) => {
   });
 });
 
+
 export const deleteMessage = catchAsyncErrors(async (req, res, next) => {
   const { id } = req.params;
   
