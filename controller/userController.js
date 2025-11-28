@@ -228,6 +228,27 @@ export const getAllDoctors = catchAsyncErrors(async (req, res, next) => {
     doctors,
   });
 });
+export const deleteDoctor = catchAsyncErrors(async (req, res, next) => {
+  const { id } = req.params;
+  
+  const doctor = await User.findById(id);
+  
+  if (!doctor) {
+    return next(new ErrorHandler("Doctor Not Found!", 404));
+  }
+  
+  if (doctor.role !== "Doctor") {
+    return next(new ErrorHandler("This user is not a doctor!", 400));
+  }
+  
+  await doctor.deleteOne();
+  
+  res.status(200).json({
+    success: true,
+    message: "Doctor Deleted Successfully!",
+  });
+});
+
 
 export const getUserDetails = catchAsyncErrors(async (req, res, next) => {
   const user = req.user;

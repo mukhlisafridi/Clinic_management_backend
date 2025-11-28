@@ -10,6 +10,7 @@ import {
   logoutAdmin,
   logoutPatient,
   logoutDoctor,
+  deleteDoctor,
 } from "../controller/userController.js";
 import {
   isAdminAuthenticated,
@@ -23,6 +24,7 @@ router.post("/patient/register", patientRegister);
 router.post("/login", login);
 router.post("/admin/addnew", isAdminAuthenticated, addNewAdmin);
 router.post("/doctor/addnew", isAdminAuthenticated, addNewDoctor);
+router.delete("/doctor/delete/:id", isAdminAuthenticated, deleteDoctor);
 router.post("/doctor/addnew/simple", isAdminAuthenticated, addNewDoctorSimplified);
 router.get("/doctors", getAllDoctors);
 router.get("/admin/me", isAdminAuthenticated, getUserDetails);
