@@ -46,3 +46,7 @@
 // };
 
 // createAdmin();
+
+
+// run this in terminal 
+// node createAdmin.js
