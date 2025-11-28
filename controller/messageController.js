@@ -15,9 +15,25 @@ export const sendMessage = catchAsyncErrors(async (req, res, next) => {
 });
 
 export const getAllMessages = catchAsyncErrors(async (req, res, next) => {
-  const messages = await Message.find();
+  const messages = await Message.find().sort({ createdAt: -1 });
   res.status(200).json({
     success: true,
     messages,
+  });
+});
+
+export const deleteMessage = catchAsyncErrors(async (req, res, next) => {
+  const { id } = req.params;
+  
+  const message = await Message.findById(id);
+  if (!message) {
+    return next(new ErrorHandler("Message Not Found!", 404));
+  }
+  
+  await message.deleteOne();
+  
+  res.status(200).json({
+    success: true,
+    message: "Message Deleted Successfully!",
   });
 });

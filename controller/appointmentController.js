@@ -149,11 +149,24 @@ export const getAllAppointments = catchAsyncErrors(async (req, res, next) => {
   });
 });
 
-
+// ✅ Get appointments for logged-in doctor
 export const getDoctorAppointments = catchAsyncErrors(async (req, res, next) => {
   const doctorId = req.user._id;
   
   const appointments = await Appointment.find({ doctorId });
+  
+  res.status(200).json({
+    success: true,
+    appointments,
+    count: appointments.length,
+  });
+});
+
+// ✅ NEW: Get appointments for logged-in patient
+export const getPatientAppointments = catchAsyncErrors(async (req, res, next) => {
+  const patientId = req.user._id;
+  
+  const appointments = await Appointment.find({ patientId }).sort({ createdAt: -1 });
   
   res.status(200).json({
     success: true,
